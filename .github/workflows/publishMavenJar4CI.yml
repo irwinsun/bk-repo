@@ -53,11 +53,8 @@ jobs:
           ./gradlew publish -Drepo_version=${repo_version} \
           publishAllPublicationsToAllJarRepository \
           -PallJarRepo=${build_mavenRepoDeployUrl} -PallJarUsername=${build_mavenRepoUsername} \
-          -PallJarPassword='${build_mavenRepoPassword}' -PsigningKeyId=${secrets.SIGNING_KEY_ID} \
-          -PsigningPassword='${secrets.SIGNING_PASSWORD}' -PsigningKey=${secrets.SIGNING_KEY}
-          -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} \
-          -Psigning.password='${{ secrets.SIGNING_PASSWORD }}' \
-          -Psigning.secretKeyRingFile=${{ github.workspace }}/secretKeyRingFile.gpg
+          -PallJarPassword='${build_mavenRepoPassword}' -PsigningKeyId=${{secrets.SIGNING_KEY_ID}} \
+          -PsigningPassword='${{secrets.SIGNING_PASSWORD}}' -PsigningKey=${{secrets.SIGNING_KEY}}
       - name: Clean Up
         if: ${{ always() }}
         working-directory:
