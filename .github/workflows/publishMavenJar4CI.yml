@@ -24,22 +24,22 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: ${{ runner.os }}-gradle
-      - name: Set up GPG
-        run: |
-          echo ${{ github.workspace }}
-          # gpg init
-          mkdir ~/.gnupg && echo use-agent >> ~/.gnupg/gpg.conf
-          echo pinentry-mode loopback >> ~/.gnupg/gpg.conf
-          echo allow-loopback-pinentry >> ~/.gnupg/gpg-agent.conf
-          echo RELOADAGENT | gpg-connect-agent
-          echo ${SIGNING_KEY} | awk '{gsub(/\\n/,"\n")}1'| gpg --dearmor > ${{ github.workspace }}/secretKeyRingFile.gpg
-          gpg --import  --pinentry-mode loopback --batch --passphrase '${SIGNING_PASSWORD}' ${{ github.workspace }}/secretKeyRingFile.gpg
-          ls -al ${{ github.workspace }}
-          ls -al ~/.gnupg/
-        env:
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        working-directory:
+#      - name: Set up GPG
+#        run: |
+#          echo ${{ github.workspace }}
+#          # gpg init
+#          mkdir ~/.gnupg && echo use-agent >> ~/.gnupg/gpg.conf
+#          echo pinentry-mode loopback >> ~/.gnupg/gpg.conf
+#          echo allow-loopback-pinentry >> ~/.gnupg/gpg-agent.conf
+#          echo RELOADAGENT | gpg-connect-agent
+#          echo ${SIGNING_KEY} | awk '{gsub(/\\n/,"\n")}1'| gpg --dearmor > ${{ github.workspace }}/secretKeyRingFile.gpg
+#          gpg --import  --pinentry-mode loopback --batch --passphrase '${SIGNING_PASSWORD}' ${{ github.workspace }}/secretKeyRingFile.gpg
+#          ls -al ${{ github.workspace }}
+#          ls -al ~/.gnupg/
+#        env:
+#          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+#          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+#        working-directory:
       - name: Gradle Build
         working-directory: src/backend
         env:
@@ -55,7 +55,7 @@ jobs:
           echo "repo_version=${repo_version}"
           ./gradlew publishAllPublicationsToAllJarRepository -Drepo_version=${repo_version} \
           -PallJarRepo=${build_mavenRepoDeployUrl} -PallJarUsername=${build_mavenRepoUsername} \
-          -PallJarPassword='${build_mavenRepoPassword}'
+          -PallJarPassword=${build_mavenRepoPassword}
       - name: Clean Up
         if: ${{ always() }}
         working-directory:
